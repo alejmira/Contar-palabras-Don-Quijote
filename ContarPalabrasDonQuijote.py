@@ -10,11 +10,11 @@ import sys
 import random
 import pyspark
 
-def main():
+def main(file, percentage):
     with pyspark.SparkContext() as sc:
-        lines = sc.textFile("Don Quijote de La Mancha")
-        random_lines = lines.filter(lambda x: random.randint(0, 100) < 5)
-        print (random_lines.collect())
+        # Cargamos fichero, filtramos lineas aleatorias y las guardamos
+        lines = sc.textFile(file)
+        random_lines = lines.filter(lambda x: random.randint(0, 100) < percentage)
         random_lines.saveAsTextFile("quijote_s05.txt")   
         
         # Contamos palabras del fichero de líneas aleatorias
@@ -34,8 +34,12 @@ def main():
         
         
 if __name__ == "__main__":
-    main()
-    
+    if len(sys.argv) == 1:
+        main("Don Quijote de La Mancha", 5)
+    elif len(sys.argv) == 2:
+        main(sys.argv[1], 5)
+    elif len(sys.argv) == 3:
+        main(sys.argv[1], sys.argv[2])
     
     
     
